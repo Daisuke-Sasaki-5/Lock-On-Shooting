@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -27,7 +28,11 @@ public class PlayerShooter : MonoBehaviour
     [Header("Enmeyロックオン")]
     [SerializeField] private EnemyLockOn lockOn;
 
+    [Header("マズルフラッシュ")]
     [SerializeField] private ParticleSystem muzzleFlash;
+
+    [Header("AudioSource")]
+    [SerializeField] private AudioSource AudioSource;
 
     private int currentAmmo;
     private bool isReloading;
@@ -139,15 +144,23 @@ public class PlayerShooter : MonoBehaviour
 
         muzzleFlash.Play();
 
+        StartCoroutine(StopShotCoroutine());
+
+        AudioSource.Stop();
+        AudioSource.time = 0f;
+        AudioSource.Play();
+
         currentAmmo--;
 
         Debug.Log(currentAmmo + " / " + maxAmmo);
 
         Vector3 shootDirection;
 
-        if(lockOn.CurrentTarget !=  null)
+        if (lockOn.CurrentTarget != null)
         {
-            shootDirection = (lockOn.CurrentTarget.position - mainCamera.transform.position).normalized;
+            Vector3 targetDirection = (lockOn.CurrentTarget.transform.position - mainCamera.transform.position).normalized;
+
+            shootDirection = Vector3.Lerp(mainCamera.transform.forward, targetDirection,0.3f).normalized;
         }
         else
         {
@@ -218,5 +231,11 @@ public class PlayerShooter : MonoBehaviour
         isReloading = false;
 
         Debug.Log("Reload Complete");
+    }
+
+    private IEnumerator StopShotCoroutine()
+    {
+        yield return new WaitForSeconds(0.08f);
+        AudioSource.Stop();
     }
 }
