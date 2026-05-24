@@ -2,6 +2,7 @@ using System;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.VirtualTexturing;
 
 public class PlayerShooter : MonoBehaviour
 {
@@ -22,6 +23,15 @@ public class PlayerShooter : MonoBehaviour
 
     [Header("連射間隔")]
     [SerializeField] private float fireRate = 0.1f;
+
+    [Header("最大装弾数")]
+    [SerializeField] private int maxAmmo = 30;
+
+    [Header("リロード時間")]
+    [SerializeField] private float reloadTime = 2f;
+
+    private int currentAmmo;
+    private bool isReloding;
 
     private PlayerInputActions inputActions;
 
@@ -46,6 +56,8 @@ public class PlayerShooter : MonoBehaviour
         // Shoot入力が押されたときにOnShoot呼ぶ
         inputActions.Player.Shoot.performed += OnShootStarted;
         inputActions.Player.Shoot.canceled += OnShootCanceled;
+
+        inputActions.Player.Reload.performed += OnReload;
     }
 
     /// <summary>
@@ -57,7 +69,14 @@ public class PlayerShooter : MonoBehaviour
         inputActions.Player.Shoot.performed -= OnShootStarted;
         inputActions.Player.Shoot.canceled -= OnShootCanceled;
 
+        inputActions.Player.Reload.canceled -= OnReload;
+
         inputActions.Disable();
+    }
+
+    private void Start()
+    {
+        currentAmmo = maxAmmo;
     }
 
     private void Update()
@@ -78,6 +97,11 @@ public class PlayerShooter : MonoBehaviour
         isShooting = true;
     }
 
+    private void OnReload(InputAction.CallbackContext context)
+    {
+        StartReload();
+    }
+
     private void OnShootCanceled(InputAction.CallbackContext context)
     {
         isShooting = false;
@@ -88,8 +112,26 @@ public class PlayerShooter : MonoBehaviour
     /// </summary>
     private void Shoot()
     {
+        // リロード中は撃てない
+        if(isReloding)
+        {
+            return;
+        }
+
+        // 弾切れ
+        if(currentAmmo <= 0)
+        {
+            StartReload();
+            return;
+        }
+
+        currentAmmo--;
+
+        Debug.Log(currentAmmo + " / " + maxAmmo);
+
         // ==== 画面中央からRayを飛ばす ====
         Ray ray = mainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f));
+        Debug.DrawRay(ray.origin, ray.direction * shootDistance, Color.red, 2f);
 
         Vector3 targetPoint;
 
@@ -127,5 +169,37 @@ public class PlayerShooter : MonoBehaviour
             bullet.transform.position = firePoint.position;
             bullet.Init(direction, bulletSpeed, 2f);
         }
+    }
+
+    private void StartReload()
+    {
+        // 既にリロード中なら無視
+        if (isReloding)
+        {
+            return;
+        }
+
+        // 満タンなら不要
+        if(currentAmmo >= maxAmmo)
+        {
+            return;
+        }
+
+        StartCoroutine(RealodCoroutine());
+    }
+
+    private System.Collections.IEnumerator RealodCoroutine()
+    {
+        isReloding = true;
+
+        Debug.Log("Reload Start");
+
+        yield return new WaitForSeconds(reloadTime);
+
+        currentAmmo = maxAmmo;
+
+        isReloding = false;
+
+        Debug.Log("Reload Complete");
     }
 }
