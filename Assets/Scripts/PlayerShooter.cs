@@ -9,17 +9,11 @@ public class PlayerShooter : MonoBehaviour
     // Player視点のカメラ
     [SerializeField] private Camera mainCamera;
 
-    // 弾を管理するオブジェクトプール
-    [SerializeField] private BulletPool bulletPool;
-
     [Header("弾の生成位置(銃口)")]
     [SerializeField] private Transform firePoint;
 
     [Header("射程距離")]
     [SerializeField] private float shootDistance = 100f;
-
-    [Header("弾速")]
-    [SerializeField] private float bulletSpeed = 50f;
 
     [Header("連射間隔")]
     [SerializeField] private float fireRate = 0.1f;
@@ -30,13 +24,22 @@ public class PlayerShooter : MonoBehaviour
     [Header("リロード時間")]
     [SerializeField] private float reloadTime = 2f;
 
+    [SerializeField] private ParticleSystem muzzleFlash;
+
     private int currentAmmo;
-    private bool isReloding;
+    private bool isReloading;
 
     private PlayerInputActions inputActions;
 
     private bool isShooting;
     private float nextFireTime;
+
+    // 外部参照用
+    public bool IsReloading => isReloading;
+    public float ReloadTime => reloadTime;
+
+    private float reloadTimer;
+    public float ReloadProgress => reloadTimer / reloadTime;
 
     /// <summary>
     /// 初期化
@@ -69,7 +72,7 @@ public class PlayerShooter : MonoBehaviour
         inputActions.Player.Shoot.performed -= OnShootStarted;
         inputActions.Player.Shoot.canceled -= OnShootCanceled;
 
-        inputActions.Player.Reload.canceled -= OnReload;
+        inputActions.Player.Reload.performed -= OnReload;
 
         inputActions.Disable();
     }
@@ -77,6 +80,8 @@ public class PlayerShooter : MonoBehaviour
     private void Start()
     {
         currentAmmo = maxAmmo;
+
+        muzzleFlash.Stop();
     }
 
     private void Update()
@@ -86,8 +91,8 @@ public class PlayerShooter : MonoBehaviour
         {
             if(Time.time > nextFireTime)
             {
-                nextFireTime = Time.time + fireRate;
                 Shoot();
+                nextFireTime = Time.time + fireRate;
             }
         }
     }
@@ -95,6 +100,10 @@ public class PlayerShooter : MonoBehaviour
     private void OnShootStarted(InputAction.CallbackContext context)
     {
         isShooting = true;
+
+        Shoot();
+
+        nextFireTime = Time.time + fireRate;
     }
 
     private void OnReload(InputAction.CallbackContext context)
@@ -113,7 +122,7 @@ public class PlayerShooter : MonoBehaviour
     private void Shoot()
     {
         // リロード中は撃てない
-        if(isReloding)
+        if(isReloading)
         {
             return;
         }
@@ -124,6 +133,8 @@ public class PlayerShooter : MonoBehaviour
             StartReload();
             return;
         }
+
+        muzzleFlash.Play();
 
         currentAmmo--;
 
@@ -156,25 +167,12 @@ public class PlayerShooter : MonoBehaviour
         {
             targetPoint = ray.origin + ray.direction * shootDistance;
         }
-
-        // ==== 弾の進行方向計算 ====
-
-        // 正規化
-        Vector3 direction = (targetPoint - firePoint.position).normalized;
-
-        BulletVisual bullet = bulletPool.GetBullet();
-
-        if(bullet != null)
-        {
-            bullet.transform.position = firePoint.position;
-            bullet.Init(direction, bulletSpeed, 2f);
-        }
     }
 
     private void StartReload()
     {
         // 既にリロード中なら無視
-        if (isReloding)
+        if (isReloading)
         {
             return;
         }
@@ -190,15 +188,20 @@ public class PlayerShooter : MonoBehaviour
 
     private System.Collections.IEnumerator RealodCoroutine()
     {
-        isReloding = true;
+        isReloading = true;
+        reloadTimer = 0f;
 
         Debug.Log("Reload Start");
 
-        yield return new WaitForSeconds(reloadTime);
+        while (reloadTimer < reloadTime)
+        {
+            reloadTimer += Time.deltaTime;
+            yield return null;
+        }
 
         currentAmmo = maxAmmo;
 
-        isReloding = false;
+        isReloading = false;
 
         Debug.Log("Reload Complete");
     }
