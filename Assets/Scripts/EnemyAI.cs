@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EneyAI : MonoBehaviour
+public class EnemyAI : MonoBehaviour
 {
     public Transform player;
 
@@ -13,6 +13,9 @@ public class EneyAI : MonoBehaviour
 
     private float attackTimer;
     private NavMeshAgent agent;
+
+    [SerializeField] private Transform targetpoint;
+    public Transform TargetPoint => targetpoint;
 
     private void Start()
     {

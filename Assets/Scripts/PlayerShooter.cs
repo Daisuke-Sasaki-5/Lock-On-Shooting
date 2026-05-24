@@ -24,6 +24,9 @@ public class PlayerShooter : MonoBehaviour
     [Header("リロード時間")]
     [SerializeField] private float reloadTime = 2f;
 
+    [Header("Enmeyロックオン")]
+    [SerializeField] private EnemyLockOn lockOn;
+
     [SerializeField] private ParticleSystem muzzleFlash;
 
     private int currentAmmo;
@@ -140,8 +143,19 @@ public class PlayerShooter : MonoBehaviour
 
         Debug.Log(currentAmmo + " / " + maxAmmo);
 
+        Vector3 shootDirection;
+
+        if(lockOn.CurrentTarget !=  null)
+        {
+            shootDirection = (lockOn.CurrentTarget.position - mainCamera.transform.position).normalized;
+        }
+        else
+        {
+            shootDirection = mainCamera.transform.forward;
+        }
+
         // ==== 画面中央からRayを飛ばす ====
-        Ray ray = mainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f));
+        Ray ray = new Ray(mainCamera.transform.position,shootDirection);
         Debug.DrawRay(ray.origin, ray.direction * shootDistance, Color.red, 2f);
 
         Vector3 targetPoint;
