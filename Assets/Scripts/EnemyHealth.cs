@@ -1,21 +1,44 @@
+using System;
 using UnityEngine;
 
 public class EnemyHealth : MonoBehaviour
 {
-    [Header("Enemyの最大HP(仮)")]
-    [SerializeField] private int maxHitCount = 3;
+    [Header("Enemyの最大HP")]
+    [SerializeField] private int maxHP = 100;
 
-    private int currentHitCount;
+    private int currentHP;
 
-    public void TakeHit()
+    // 外部参照用
+    public int CurrentHP => currentHP;
+    public int MaxHP => maxHP;
+
+    public void Start()
     {
-        currentHitCount++;
+        currentHP = maxHP;
+    }
 
-        Debug.Log("Hit Count : " + currentHitCount);
+    /// <summary>
+    /// ダメージ処理
+    /// </summary>
+    /// <param name="damage"></param>
+    public void TakeDamage(int damage)
+    {
+        currentHP -= damage;
 
-        if(currentHitCount >= maxHitCount)
+        Debug.Log("Hit Count : " + currentHP);
+
+       if(currentHP <= 0)
         {
-            Destroy(gameObject);
+            Die();
         }
+    }
+
+    /// <summary>
+    /// 死亡処理\
+    /// </summary>
+    /// <exception cref="NotImplementedException"></exception>
+    private void Die()
+    {
+        Destroy(gameObject);
     }
 }

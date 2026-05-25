@@ -14,12 +14,15 @@ public class EnemyAI : MonoBehaviour
     private float attackTimer;
     private NavMeshAgent agent;
 
+    private Animator animator;
+
     [SerializeField] private Transform targetpoint;
     public Transform TargetPoint => targetpoint;
 
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        animator = GetComponent<Animator>();
         agent.stoppingDistance = attackDistance;
     }
 
@@ -41,6 +44,8 @@ public class EnemyAI : MonoBehaviour
             agent.isStopped = true;
             Attack();
         }
+
+        animator.SetBool("IsMove", agent.velocity.magnitude > 0.1f);
     }
 
     private void Attack()

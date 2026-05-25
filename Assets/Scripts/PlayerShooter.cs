@@ -130,13 +130,13 @@ public class PlayerShooter : MonoBehaviour
     private void Shoot()
     {
         // リロード中は撃てない
-        if(isReloading)
+        if (isReloading)
         {
             return;
         }
 
         // 弾切れ
-        if(currentAmmo <= 0)
+        if (currentAmmo <= 0)
         {
             StartReload();
             return;
@@ -160,7 +160,7 @@ public class PlayerShooter : MonoBehaviour
         {
             Vector3 targetDirection = (lockOn.CurrentTarget.transform.position - mainCamera.transform.position).normalized;
 
-            shootDirection = Vector3.Lerp(mainCamera.transform.forward, targetDirection,0.3f).normalized;
+            shootDirection = Vector3.Lerp(mainCamera.transform.forward, targetDirection, 0.3f).normalized;
         }
         else
         {
@@ -168,7 +168,7 @@ public class PlayerShooter : MonoBehaviour
         }
 
         // ==== 画面中央からRayを飛ばす ====
-        Ray ray = new Ray(mainCamera.transform.position,shootDirection);
+        Ray ray = new Ray(mainCamera.transform.position, shootDirection);
         Debug.DrawRay(ray.origin, ray.direction * shootDistance, Color.red, 2f);
 
         Vector3 targetPoint;
@@ -181,22 +181,22 @@ public class PlayerShooter : MonoBehaviour
             targetPoint = hit.point;
             Debug.Log("Hit : " + hit.collider.name);
 
-            EnemyHealth enemy = hit.collider.GetComponent<EnemyHealth>();
+            EnemyHitBox hitBox = hit.collider.GetComponent<EnemyHitBox>();
 
-            if (enemy != null)
+            if (hitBox != null)
             {
-                enemy.TakeHit();
+                hitBox.Hit();
             }
-        }
-        // 何にも当たらなかった場合
-        // 最大距離をターゲットにする
-        else
-        {
-            targetPoint = ray.origin + ray.direction * shootDistance;
+            // 何にも当たらなかった場合
+            // 最大距離をターゲットにする
+            else
+            {
+                targetPoint = ray.origin + ray.direction * shootDistance;
+            }
         }
     }
 
-    private void StartReload()
+        private void StartReload()
     {
         // 既にリロード中なら無視
         if (isReloading)
