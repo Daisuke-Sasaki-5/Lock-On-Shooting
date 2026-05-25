@@ -16,6 +16,8 @@ public class EnemyAI : MonoBehaviour
 
     private Animator animator;
 
+    private bool isAttacking;
+
     [SerializeField] private Transform targetpoint;
     public Transform TargetPoint => targetpoint;
 
@@ -37,33 +39,47 @@ public class EnemyAI : MonoBehaviour
         {
             agent.isStopped = false;
             agent.SetDestination(player.position);
+
+            isAttacking = false;
+
+            animator.SetBool("IsMove", true);
         }
         else
         {
             // 攻撃距離
             agent.isStopped = true;
+            animator.SetBool("IsMove", false);
             Attack();
         }
-
-        animator.SetBool("IsMove", agent.velocity.magnitude > 0.1f);
     }
 
     private void Attack()
     {
-        // 攻撃のアニメーションを後で入れる
         attackTimer += Time.deltaTime;
 
-        if (attackTimer >= attackCooldawn)
+        if (attackTimer >= attackCooldawn && !isAttacking)
         {
             attackTimer = 0;
 
-            PlayerHealth health = player.GetComponent<PlayerHealth>();
-
-            if(health != null)
-            {
-                health.TakeDamage(attackDamage);
-            }
-            Debug.Log("Enemy Attack");
+            // 攻撃アニメーション再生
+            isAttacking = true;
+            animator.SetTrigger("Attack");
         }
+    }
+
+    public void DealDamage()
+    {
+        PlayerHealth health = player.GetComponent<PlayerHealth>();
+
+        if(health != null)
+        {
+            health.TakeDamage(attackDamage);
+        }
+        Debug.Log("Enemy Attack");
+    }
+
+    public void EndAttack()
+    {
+        isAttacking = false;
     }
 }

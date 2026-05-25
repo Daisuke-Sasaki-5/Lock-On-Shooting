@@ -672,7 +672,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5180843723131418720, guid: 59abd5d36d4096046b1c6f35469b4baa, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.9433517
+      value: 5.19
       objectReference: {fileID: 0}
     - target: {fileID: 5180843723131418720, guid: 59abd5d36d4096046b1c6f35469b4baa, type: 3}
       propertyPath: m_LocalPosition.y
@@ -680,7 +680,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5180843723131418720, guid: 59abd5d36d4096046b1c6f35469b4baa, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 11.85639
+      value: -5.02
       objectReference: {fileID: 0}
     - target: {fileID: 5180843723131418720, guid: 59abd5d36d4096046b1c6f35469b4baa, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2049,7 +2049,7 @@ MonoBehaviour:
   player: {fileID: 1666434826}
   attackDistance: 3
   attackDamage: 10
-  attackCoolDdawn: 1.5
+  attackCooldawn: 1.5
   targetpoint: {fileID: 911477005}
 --- !u!195 &1571737914
 NavMeshAgent:
@@ -2110,7 +2110,7 @@ MonoBehaviour:
   player: {fileID: 1666434826}
   attackDistance: 3
   attackDamage: 10
-  attackCoolDdawn: 1.5
+  attackCooldawn: 1.5
   targetpoint: {fileID: 314438193}
 --- !u!195 &1580325074
 NavMeshAgent:
@@ -2637,9 +2637,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
   player: {fileID: 118975640}
-  attackDistance: 3
+  attackDistance: 2
   attackDamage: 10
-  attackCoolDdawn: 1.5
+  attackCooldawn: 1.5
   targetpoint: {fileID: 341358659}
 --- !u!54 &2088554537
 Rigidbody:
