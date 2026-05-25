@@ -9,7 +9,7 @@ public class EnemyAI : MonoBehaviour
     public float attackDistance = 3f;
     public int attackDamage = 10;
 
-    public float attackCoolDdawn = 1.5f;
+    public float attackCooldawn = 1.5f;
 
     private float attackTimer;
     private NavMeshAgent agent;
@@ -53,7 +53,7 @@ public class EnemyAI : MonoBehaviour
         // 攻撃のアニメーションを後で入れる
         attackTimer += Time.deltaTime;
 
-        if (attackTimer >= attackCoolDdawn)
+        if (attackTimer >= attackCooldawn)
         {
             attackTimer = 0;
 
