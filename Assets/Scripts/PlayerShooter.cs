@@ -32,7 +32,7 @@ public class PlayerShooter : MonoBehaviour
     [SerializeField] private ParticleSystem muzzleFlash;
 
     [Header("AudioSource")]
-    [SerializeField] private AudioSource AudioSource;
+    [SerializeField] private AudioSource audioSource;
 
     private int currentAmmo;
     private bool isReloading;
@@ -45,7 +45,8 @@ public class PlayerShooter : MonoBehaviour
     // ŠO•”ŽQÆ—p
     public bool IsReloading => isReloading;
     public float ReloadTime => reloadTime;
-
+    public int CurrentAmmo => currentAmmo;
+    public int MaxAmmo => maxAmmo;
     private float reloadTimer;
     public float ReloadProgress => reloadTimer / reloadTime;
 
@@ -146,9 +147,9 @@ public class PlayerShooter : MonoBehaviour
 
         StartCoroutine(StopShotCoroutine());
 
-        AudioSource.Stop();
-        AudioSource.time = 0f;
-        AudioSource.Play();
+        audioSource.Stop();
+        audioSource.time = 0f;
+        audioSource.Play();
 
         currentAmmo--;
 
@@ -236,6 +237,6 @@ public class PlayerShooter : MonoBehaviour
     private IEnumerator StopShotCoroutine()
     {
         yield return new WaitForSeconds(0.08f);
-        AudioSource.Stop();
+        audioSource.Stop();
     }
 }
