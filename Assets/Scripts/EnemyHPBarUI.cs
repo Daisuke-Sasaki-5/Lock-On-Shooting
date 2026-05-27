@@ -12,6 +12,11 @@ public class EnemyHPBarUI : MonoBehaviour
     [Header("メインカメラ")]
     [SerializeField] private Camera mainCamera;
 
+    private void Start()
+    {
+        mainCamera = Camera.main;
+    }
+
     private void Update()
     {
         // HP割合更新

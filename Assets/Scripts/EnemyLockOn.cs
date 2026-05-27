@@ -8,7 +8,7 @@ public class EnemyLockOn : MonoBehaviour
     [SerializeField] private Camera m_Camera;
 
     [Header("ロックオン可能な最大距離")]
-    [SerializeField] private float lockOnDistance = 50f;
+    [SerializeField] private float lockOnDistance = 5f;
 
     [Header("どのくらい画面中央に近ければ対象にするか")]
     [SerializeField] private float maxLoakRange = 0.4f;
@@ -81,6 +81,7 @@ public class EnemyLockOn : MonoBehaviour
 
                 if(enemyAI != null )
                 {
+                    Debug.Log("ああ" + enemyAI.TargetPoint);
                     bestTarget = enemyAI.TargetPoint;
                 }
             }

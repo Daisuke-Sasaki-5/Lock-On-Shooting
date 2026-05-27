@@ -45,6 +45,9 @@ public class PlayerAim : MonoBehaviour
     {
         // カーソル固定
         Cursor.lockState = CursorLockMode.Locked;
+
+        // カーソル非表示
+        Cursor.visible = false;
     }
 
     private void Update()

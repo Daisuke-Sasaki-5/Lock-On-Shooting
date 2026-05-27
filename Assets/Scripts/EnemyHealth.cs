@@ -39,6 +39,8 @@ public class EnemyHealth : MonoBehaviour
     /// <exception cref="NotImplementedException"></exception>
     private void Die()
     {
+        GameManager.instance.AddScore(100);
+
         Destroy(gameObject);
     }
 }
