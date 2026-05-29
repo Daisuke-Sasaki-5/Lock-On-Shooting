@@ -279,7 +279,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyLockOn
   m_Camera: {fileID: 330585545}
-  lockOnDistance: 7
+  lockOnDistance: 25
   maxLoakRange: 0.4
 --- !u!114 &118975642
 MonoBehaviour:
@@ -2687,6 +2687,7 @@ MonoBehaviour:
   - {fileID: 944685362}
   - {fileID: 1206076367}
   spawnInterval: 2
+  maxEnemySpawnCount: 12
   player: {fileID: 118975640}
   spawnCount: 2
 --- !u!1 &1999665936
@@ -2897,6 +2898,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2387252086110098283, guid: be56eaf13741983468ec123c7875b0e7, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4150165583347655940, guid: be56eaf13741983468ec123c7875b0e7, type: 3}
       propertyPath: m_Name
       value: FadeCanvas

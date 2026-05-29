@@ -130,31 +130,42 @@ public class PlayerShooter : MonoBehaviour
     /// </summary>
     private void Shoot()
     {
+        // ゲーム開始前は撃てない
+        if(!GameManager.instance.IsGameStarted)
+        {
+            return;
+        }
+
         // リロード中は撃てない
         if (isReloading)
         {
             return;
         }
 
-        // 弾切れ
+        // 弾切れ時はリロード
         if (currentAmmo <= 0)
         {
             StartReload();
             return;
         }
 
+        // 発射エフェクト再生
         muzzleFlash.Play();
 
+        // 発射音停止処理
         StartCoroutine(StopShotCoroutine());
 
+        // 発射音再生
         audioSource.Stop();
         audioSource.time = 0f;
         audioSource.Play();
 
+        // 弾数消費
         currentAmmo--;
 
         Debug.Log(currentAmmo + " / " + maxAmmo);
 
+        // ==== ロックオン対象がいる場合は射撃補正 ====
         Vector3 shootDirection;
 
         if (lockOn.CurrentTarget != null)

@@ -12,6 +12,9 @@ public class EnemySpawner : MonoBehaviour
     [Header("スポーン設定")]
     [SerializeField] private float spawnInterval = 2f;
 
+    [Header("最大スポーン数")]
+    [SerializeField] private int maxEnemySpawnCount = 12;
+
     [SerializeField] private Transform player;
 
     // 1回で何体出すか
@@ -35,8 +38,15 @@ public class EnemySpawner : MonoBehaviour
 
     private void SpawnEnemies()
     {
-        // spawnCount回スポーン
-        for(int i = 0; i < spawnCount; i++)
+        GameObject[] enemis = GameObject.FindGameObjectsWithTag("Enemy");
+
+        if (enemis.Length >= maxEnemySpawnCount)
+        {
+            return;
+        }
+
+            // spawnCount回スポーン
+            for (int i = 0; i < spawnCount; i++)
         {
             Spawn();
         }

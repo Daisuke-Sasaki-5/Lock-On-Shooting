@@ -19,12 +19,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TMP_Text timetext;
     private float timer;
     private bool isGameOver = false;
+    private bool isGameStarted;
 
     [Header("スタートUI")]
     [SerializeField] private TextMeshProUGUI readytext;
     [SerializeField] private TextMeshProUGUI gotext;
 
+    // 外部参照用
     public bool IsGameOver => isGameOver;
+    public bool IsGameStarted => isGameStarted;
 
     private Coroutine startRoutine;
     private void Awake()
@@ -53,6 +56,7 @@ public class GameManager : MonoBehaviour
 
         timer = timeLimit;
         isGameOver = false;
+        isGameStarted = false;
 
         UpdateScoreUI();
         UpdateTimeUI();
@@ -118,6 +122,7 @@ public class GameManager : MonoBehaviour
         if (timetext != null) timetext.gameObject.SetActive(true);
 
         // ゲーム開始
+        isGameStarted = true;
         Time.timeScale = 1f;
     }
 
